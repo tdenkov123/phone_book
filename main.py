@@ -1,5 +1,6 @@
 import psycopg2
 import tkinter as tk
+from tkinter import ttk
 
 def main():
     attributes = ('fam', 'nam', 'otc', 'street')
@@ -53,7 +54,7 @@ def main():
         window.title("DB Client")
 
         # Get data from TKinter entry poles
-        def get_data():
+        def get_entry_data():
             data = []
             data.append(entry_fam.get())
             data.append(entry_nam.get())
@@ -67,7 +68,7 @@ def main():
 
         # Insert function
         def insert_data():
-            data = get_data()
+            data = get_entry_data()
             flag = True
             print()
             for elem in data:
@@ -114,27 +115,12 @@ def main():
                 cur.execute(f"""insert into main values(default, {fam_id}, {nam_id}, {otc_id}, {street_id}, '{data[4]}', {data[5]}, '{data[6]}')""")
                 print('Succesful insert')
 
-
-        # Show function
-        def show_data():
-            cur.execute("""select u_id, fam.fam, nam.nam, otc.otc,
-                    street.street, building, appartment, phone from main
-                    join fam on main.fam = fam_id
-                    join nam on main.nam = nam_id
-                    join otc on main.otc = otc_id
-                    join street on main.street = street_id;""")
-            rows = cur.fetchall()
-            for row in rows:
-                cleaned_row = [str(item).strip() for item in row]
-                print(cleaned_row)
-            print("Succesful show")
-
         # Change function
         def change_data():
             change_id = int(entry_change_id.get())
             if not change_id: 
                 print("Insert ID for string you want to change!")
-            data = get_data()
+            data = get_entry_data()
             flag = True
             print()
             for elem in data:
@@ -189,6 +175,54 @@ def main():
             cur.execute(f"""delete from main where u_id = {delete_id}""")
 
             print("Succesful deletion")
+
+                # Show function
+        
+        # Show data function
+        def get_table_data():
+            data = []
+            cur.execute("""select u_id, fam.fam, nam.nam, otc.otc,
+                    street.street, building, appartment, phone from main
+                    join fam on main.fam = fam_id
+                    join nam on main.nam = nam_id
+                    join otc on main.otc = otc_id
+                    join street on main.street = street_id;""")
+            rows = cur.fetchall()
+            for row in rows:
+                cleaned_row = [str(item).strip() for item in row]
+                data.append(cleaned_row)
+            print("Succesful show")
+            return data
+        
+        # Show table
+        def show_table():
+            data = get_table_data()
+            table_window = tk.Toplevel()
+            table_window.geometry("800x600")
+            table_window.title("Data Table")
+
+            columns = ('id', 'fam', 'nam', 'otc', 'street', 'building', 'appartment', 'phone')
+            tree = ttk.Treeview(table_window, columns=columns, show='headings')
+            #tree["columns"] = ("ID", "Фамилия", "Имя", "Отчество", "Улица", "Здание", "Квартира", "Телефон")
+
+            tree.heading("id", text="ID")
+            tree.heading("fam", text="Фамилия")
+            tree.heading("nam", text="Имя")
+            tree.heading("otc", text="Отчество")
+            tree.heading("street", text="Улица")
+            tree.heading("building", text="Здание")
+            tree.heading("appartment", text="Квартира")
+            tree.heading("phone", text="Телефон")
+
+            i = 0
+            for wid in (10, 70, 50, 70, 120, 30, 20, 100):
+                tree.column(tree["columns"][i], width=wid)
+                i += 1
+
+            for row in data:
+                tree.insert("", 'end', values=row)
+
+            tree.pack(expand=True, fill="both")
 
         # Функциональные поля для ввода данных
         label_fam = tk.Label(window, text="Фамилия:")
@@ -245,7 +279,7 @@ def main():
         button_delete = tk.Button(window, text="Удалить", command=delete_data)
         button_delete.pack()
         # Кнопка для показа данных БД
-        button_show = tk.Button(window, text="Показать", command=show_data)
+        button_show = tk.Button(window, text="Показать", command=show_table)
         button_show.pack()
 
         window.mainloop()

@@ -176,7 +176,6 @@ def main():
 
             print("Succesful deletion")
 
-                # Show function
         
         # Show data function
         def get_table_data():

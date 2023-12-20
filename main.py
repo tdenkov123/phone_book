@@ -51,6 +51,7 @@ def main():
     # Initialize window
     def init():
         window = tk.Tk()
+        window.geometry("200x480")
         window.title("DB Client")
 
         # Get data from TKinter entry poles
@@ -268,17 +269,17 @@ def main():
         label_change_id.pack()
         entry_change_id = tk.Entry(window)
         entry_change_id.pack()
-        button_change = tk.Button(window, text="Изменить", command=change_data)
+        button_change = tk.Button(window, text="Изменить данные", command=change_data)
         button_change.pack()
         # Кнопка для удаления данных БД
         label_delete_id = tk.Label(window, text="ID для удаления:")
         label_delete_id.pack()
         entry_delete_id = tk.Entry(window)
         entry_delete_id.pack()
-        button_delete = tk.Button(window, text="Удалить", command=delete_data)
+        button_delete = tk.Button(window, text="Удалить данные", command=delete_data)
         button_delete.pack()
         # Кнопка для показа данных БД
-        button_show = tk.Button(window, text="Показать", command=show_table)
+        button_show = tk.Button(window, text="Показать данные", command=show_table)
         button_show.pack()
 
         window.mainloop()

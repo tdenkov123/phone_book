@@ -123,7 +123,6 @@ def main():
                 print("Insert ID for string you want to change!")
             data = get_entry_data()
             flag = True
-            print()
             for elem in data:
                     if not elem: flag = False
             if not flag: 
